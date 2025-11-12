@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Diagnostics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style> 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+        .glow-green {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-800/90 backdrop-blur-sm border-b border-gray-700/50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 tracking-tight">Advanced Diagnostics</h1>
+                <button id="refreshBtn" class="bg-gray-700/80 hover:bg-gray-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg transition-all duration-300 flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 font-medium text-xs sm:text-sm border border-gray-600/50 hover:border-gray-500">
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-16">
+            <div class="inline-block animate-spin rounded-full h-14 w-14 border-4 border-gray-700 border-t-green-500 border-r-green-500"></div>
+            <p class="mt-6 text-gray-300 text-lg font-medium">Loading diagnostics...</p>
+            <p class="mt-2 text-gray-500 text-sm">Please wait while we fetch the latest data</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden bg-gradient-to-r from-red-900/90 to-red-800/90 border border-red-700/50 rounded-xl p-5 mb-6 shadow-xl backdrop-blur-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <p class="ml-3 text-red-100 font-medium" id="errorMessage">Failed to load data. Please check your backend connection.</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="hidden">
+            <!-- 3x2 Grid Layout - 2 columns on mobile, 3 columns on desktop -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                <!-- Card 1: Condition -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Condition</h2>
+                    <div class="flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px] md:min-h-[180px]">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 shadow-lg glow-green transition-all duration-300 hover:scale-110" style="transform: scale(0); opacity: 0;">
+                            <svg class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <p class="text-white text-lg sm:text-xl font-bold tracking-wide opacity-0 transition-opacity duration-500" id="conditionStatus" style="transition-delay: 0.3s;">OK</p>
+                    </div>
+                </div> 
+
+                <!-- Card 2: Error Count -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Error Count</h2>
+                    <div class="flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px] md:min-h-[180px]">
+                        <p class="text-white text-5xl sm:text-6xl md:text-7xl font-extrabold mb-2 sm:mb-3 bg-gradient-to-br from-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl" id="errorCount">5</p>
+                        <p class="text-gray-400 text-xs sm:text-sm font-medium uppercase tracking-wider">Error Count</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Error Duration -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Error Duration</h2>
+                    <div class="flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px] md:min-h-[180px]">
+                        <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 shadow-lg glow-green transition-all duration-300 hover:scale-110">
+                            <p class="text-white text-lg sm:text-xl md:text-2xl font-bold drop-shadow-lg" id="errorDuration">7h</p>
+                        </div>
+                        <p class="text-gray-400 text-xs sm:text-sm font-medium uppercase tracking-wider">Error Duration</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Error Severity -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Error Severity</h2>
+                    <div class="h-40 sm:h-48 md:h-52 flex items-end justify-center gap-2 sm:gap-3 pb-2">
+                        <canvas id="severityChart"></canvas>
+                    </div>
+                    <p class="text-gray-400 text-xs sm:text-sm text-center mt-2 sm:mt-3 md:mt-4 font-medium uppercase tracking-wider">Error Severity</p>
+                </div>
+
+                <!-- Card 5: Diagnoses -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Diagnoses</h2>
+                    <div class="h-40 sm:h-48 md:h-52 flex items-end justify-center gap-2 sm:gap-3 pb-2">
+                        <canvas id="diagnosesChart"></canvas>
+                    </div>
+                    <p class="text-gray-400 text-xs sm:text-sm text-center mt-2 sm:mt-3 md:mt-4 font-medium uppercase tracking-wider">Diagnoses</p>
+                </div>
+
+                <!-- Card 6: Recent Errors -->
+                <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 md:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-3 sm:mb-4 md:mb-6 uppercase tracking-wider">Recent Errors</h2>
+                    <div class="overflow-x-auto -mx-2 px-2">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-gray-600/50">
+                                    <th class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Error ID</th>
+                                    <th class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">State</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentErrorsBody" class="divide-y divide-gray-600/30">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuration - Update this with your backend API endpoint
+        const API_ENDPOINT = 'http://localhost:3000/api/diagnostics'; // Change this to your backend URL
+
+        // Chart instances
+        let severityChart = null;
+        let diagnosesChart = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            document.getElementById('refreshBtn').addEventListener('click', loadData);
+        });
+
+        // Load data from backend
+        async function loadData() {
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const dashboardContent = document.getElementById('dashboardContent');
+            
+            // Show loading state
+            loadingState.classList.remove('hidden');
+            errorState.classList.add('hidden');
+            dashboardContent.classList.add('hidden');
+
+            try {
+                // Fetch data from backend
+                const response = await fetch(API_ENDPOINT);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Process and display data
+                displayData(data);
+                
+                // Hide loading, show content
+                loadingState.classList.add('hidden');
+                dashboardContent.classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                
+                // Show error state
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = 
+                    `Error: ${error.message}. Please ensure your backend is running at ${API_ENDPOINT}`;
+                
+                // For demo purposes, load sample data if backend is not available
+                console.log('Loading sample data for demonstration...');
+                loadSampleData();
+            }
+        }
+
+        // Display data in the dashboard
+        function displayData(data) {
+            // Update condition with animation
+            setTimeout(() => {
+                updateCondition(data.condition || data.status || 'OK');
+            }, 100);
+            
+            // Update error count with animation
+            setTimeout(() => {
+                updateErrorCount(data.errorCount || data.errors?.length || 0);
+            }, 200);
+            
+            // Update error duration with animation
+            setTimeout(() => {
+                updateErrorDuration(data.errorDuration || data.duration || '7h');
+            }, 300);
+            
+            // Update error severity chart with delay for animation
+            setTimeout(() => {
+                updateSeverityChart(data.errorSeverity || data.severity || [1, 3, 5, 7, 8]);
+            }, 400);
+            
+            // Update diagnoses chart with delay for animation
+            setTimeout(() => {
+                updateDiagnosesChart(data.diagnoses || data.diagnosis || [2, 4, 6, 3]);
+            }, 500);
+            
+            // Update recent errors table with animation
+            setTimeout(() => {
+                updateRecentErrors(data.recentErrors || data.errors || []);
+            }, 600);
+        }
+
+        // Update Condition with animation
+        function updateCondition(status) {
+            const conditionStatus = document.getElementById('conditionStatus');
+            const conditionCard = conditionStatus.closest('.bg-gradient-to-br');
+            const circle = conditionCard.querySelector('.rounded-full');
+            
+            conditionStatus.textContent = status;
+            conditionStatus.style.opacity = '0';
+            
+            // Change color based on status
+            if (status.toLowerCase() === 'ok' || status.toLowerCase() === 'good') {
+                circle.classList.remove('from-red-500', 'to-red-600', 'from-yellow-500', 'to-yellow-600', 'glow-red');
+                circle.classList.add('from-green-500', 'to-green-600', 'glow-green');
+            } else if (status.toLowerCase() === 'warning') {
+                circle.classList.remove('from-green-500', 'to-green-600', 'from-red-500', 'to-red-600', 'glow-green', 'glow-red');
+                circle.classList.add('from-yellow-500', 'to-yellow-600');
+            } else {
+                circle.classList.remove('from-green-500', 'to-green-600', 'from-yellow-500', 'to-yellow-600', 'glow-green');
+                circle.classList.add('from-red-500', 'to-red-600', 'glow-red');
+            }
+            
+            // Animate circle with bounce effect
+            setTimeout(() => {
+                circle.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                circle.style.transform = 'scale(1)';
+                circle.style.opacity = '1';
+                
+                // Animate text
+                setTimeout(() => {
+                    conditionStatus.style.transition = 'opacity 0.5s ease-in';
+                    conditionStatus.style.opacity = '1';
+                }, 300);
+            }, 10);
+        }
+
+        // Update Error Count with animation
+        function updateErrorCount(count) {
+            const element = document.getElementById('errorCount');
+            const targetCount = count;
+            const duration = 1500;
+            const startTime = performance.now();
+            const startCount = parseInt(element.textContent) || 0;
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (easeOutCubic)
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const currentCount = Math.floor(startCount + (targetCount - startCount) * easeOut);
+                
+                element.textContent = currentCount;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.textContent = targetCount;
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Update Error Duration
+        function updateErrorDuration(duration) {
+            document.getElementById('errorDuration').textContent = duration;
+        }
+
+        // Update Error Severity Chart
+        function updateSeverityChart(severityData) {
+            const ctx = document.getElementById('severityChart');
+            
+            if (severityChart) {
+                severityChart.destroy();
+            }
+            
+            // Ensure we have 5 data points
+            const data = Array.isArray(severityData) ? severityData : [1, 3, 5, 7, 8];
+            if (data.length < 5) {
+                while (data.length < 5) data.push(0);
+            }
+            
+            severityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['', '', '', '', ''],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.8)',  // Green for first
+                            'rgba(239, 68, 68, 0.8)',  // Red for rest
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(34, 197, 94)',
+                            'rgb(239, 68, 68)',
+                            'rgb(239, 68, 68)',
+                            'rgb(239, 68, 68)',
+                            'rgb(239, 68, 68)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 4,
+                        barThickness: 30,
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutCubic',
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default') {
+                                delay = context.dataIndex * 200;
+                            }
+                            return delay;
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Severity: ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: false,
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Diagnoses Chart
+        function updateDiagnosesChart(diagnosesData) {
+            const ctx = document.getElementById('diagnosesChart');
+            
+            if (diagnosesChart) {
+                diagnosesChart.destroy();
+            }
+            
+            // Ensure we have 4 data points
+            const data = Array.isArray(diagnosesData) ? diagnosesData : [2, 4, 6, 3];
+            if (data.length < 4) {
+                while (data.length < 4) data.push(0);
+            }
+            
+            diagnosesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['', '', '', ''],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.8)',  // All green
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(34, 197, 94, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(34, 197, 94)',
+                            'rgb(34, 197, 94)',
+                            'rgb(34, 197, 94)',
+                            'rgb(34, 197, 94)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 4,
+                        barThickness: 30,
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutCubic',
+                        delay: (context) => {
+                            let delay = 0;
+                            if (context.type === 'data' && context.mode === 'default') {
+                                delay = context.dataIndex * 200;
+                            }
+                            return delay;
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Count: ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: false,
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Recent Errors Table with animation
+        function updateRecentErrors(errors) {
+            const tbody = document.getElementById('recentErrorsBody');
+            
+            tbody.innerHTML = '';
+            
+            // Show up to 4 recent errors
+            const displayErrors = errors.slice(0, 4);
+            
+            if (displayErrors.length === 0) {
+                // Default sample data
+                const sampleErrors = [
+                    { id: 'E-101', state: 'Active' },
+                    { id: 'E-102', state: 'Active' },
+                    { id: 'E-103', state: 'Resolved' },
+                    { id: 'E-104', state: 'Resolved' }
+                ];
+                
+                sampleErrors.forEach((error, index) => {
+                    setTimeout(() => {
+                        const row = document.createElement('tr');
+                        const stateColor = error.state === 'Active' ? 'text-red-400' : 'text-green-400';
+                        const bgColor = error.state === 'Active' ? 'bg-red-500/10' : 'bg-green-500/10';
+                        
+                        row.className = `hover:bg-gray-600/30 transition-all duration-300 ${bgColor} opacity-0 translate-x-4`;
+                        row.innerHTML = `
+                            <td class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-medium text-white">${error.id}</td>
+                            <td class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-semibold ${stateColor}">
+                                <span class="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${error.state === 'Active' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">
+                                    ${error.state}
+                                </span>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                        
+                        // Animate in
+                        setTimeout(() => {
+                            row.classList.remove('opacity-0', 'translate-x-4');
+                            row.classList.add('opacity-100', 'translate-x-0');
+                        }, 10);
+                    }, index * 100);
+                });
+            } else {
+                displayErrors.forEach((error, index) => {
+                    setTimeout(() => {
+                        const row = document.createElement('tr');
+                        const errorId = error.id || error.errorId || error.error_id || '-';
+                        const state = error.state || error.status || 'Unknown';
+                        const isActive = state === 'Active' || state === 'active';
+                        const stateColor = isActive ? 'text-red-400' : 'text-green-400';
+                        const bgColor = isActive ? 'bg-red-500/10' : 'bg-green-500/10';
+                        
+                        row.className = `hover:bg-gray-600/30 transition-all duration-300 ${bgColor} opacity-0 translate-x-4`;
+                        row.innerHTML = `
+                            <td class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-medium text-white">${errorId}</td>
+                            <td class="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm font-semibold ${stateColor}">
+                                <span class="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${isActive ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">
+                                    ${state}
+                                </span>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                        
+                        // Animate in
+                        setTimeout(() => {
+                            row.classList.remove('opacity-0', 'translate-x-4');
+                            row.classList.add('opacity-100', 'translate-x-0');
+                        }, 10);
+                    }, index * 100);
+                });
+            }
+        }
+
+        // Load sample data for demonstration (when backend is not available)
+        function loadSampleData() {
+            const sampleData = {
+                condition: 'OK',
+                errorCount: 5,
+                errorDuration: '7h',
+                errorSeverity: [1, 3, 5, 7, 8],
+                diagnoses: [2, 4, 6, 3],
+                recentErrors: [
+                    { id: 'E-101', state: 'Active' },
+                    { id: 'E-102', state: 'Active' },
+                    { id: 'E-103', state: 'Resolved' },
+                    { id: 'E-104', state: 'Resolved' }
+                ]
+            };
+            
+            // Show content with sample data
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('dashboardContent').classList.remove('hidden');
+            displayData(sampleData);
+        }
+    </script>
+</body>
+</html>
