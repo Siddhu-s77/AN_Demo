@@ -645,32 +645,38 @@
         let currentUserId = 1;
 
         // User data with profile info and locations (25 Indian Users)
+        // Random firmware statuses for each user
+        const firmwareStatuses = ['OK', 'Mismatch', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK'];
+        const firmwareIds = ['1.2.104', '1.2.102', '1.2:105', '1.2.106', '1.2.103', '1.2:107', '1.2.108', '1.2:109', '1.2.110', '1.2.111', '1.2:112', '1.2.113', '1.2.114', '1.2:115', '1.2.116', '1.2:117', '1.2.118', '1.2.119', '1.2:120', '1.2.121', '1.2:122', '1.2.123', '1.2.124', '1.2:125', '1.2.126'];
+        // Random door cycle times (mix of mins=red and hours/days=green)
+        const doorCycleTimes = ['25 mins', '3 hours', '1 day', '45 mins', '5 hours', '2 days', '15 mins', '8 hours', '1 day', '30 mins', '4 hours', '2 days', '20 mins', '6 hours', '1 day', '50 mins', '12 hours', '3 days', '10 mins', '7 hours', '1 day', '35 mins', '9 hours', '2 days', '40 mins'];
+
         const userData = {
-            1: { name: 'Rajesh Kumar', mac: 'A4:B2:C1:D3:E5:F6', profileImg: 'https://i.pravatar.cc/150?img=15', location: 'Mumbai, Maharashtra', gradient: 'from-blue-400 to-purple-500', initial: 'R' },
-            2: { name: 'Priya Sharma', mac: 'B5:C3:D2:E4:F6:A1', profileImg: 'https://i.pravatar.cc/150?img=20', location: 'Delhi, NCR', gradient: 'from-green-400 to-teal-500', initial: 'P' },
-            3: { name: 'Amit Patel', mac: 'C6:D4:E3:F5:A2:B1', profileImg: 'https://i.pravatar.cc/150?img=25', location: 'Bangalore, Karnataka', gradient: 'from-pink-400 to-red-500', initial: 'A' },
-            4: { name: 'Kavita Singh', mac: 'D1:E5:F2:A3:B4:C6', profileImg: 'https://i.pravatar.cc/150?img=30', location: 'Chennai, Tamil Nadu', gradient: 'from-yellow-400 to-orange-500', initial: 'K' },
-            5: { name: 'Vikram Reddy', mac: 'E2:F6:A1:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=35', location: 'Hyderabad, Telangana', gradient: 'from-indigo-400 to-blue-500', initial: 'V' },
-            6: { name: 'Anjali Desai', mac: 'F3:A4:B5:C1:D2:E6', profileImg: 'https://i.pravatar.cc/150?img=40', location: 'Pune, Maharashtra', gradient: 'from-cyan-400 to-blue-500', initial: 'A' },
-            7: { name: 'Rohit Mehta', mac: 'G1:H2:I3:J4:K5:L6', profileImg: 'https://i.pravatar.cc/150?img=45', location: 'Kolkata, West Bengal', gradient: 'from-purple-400 to-pink-500', initial: 'R' },
-            8: { name: 'Sneha Joshi', mac: 'H3:I4:J5:K6:L1:M2', profileImg: 'https://i.pravatar.cc/150?img=50', location: 'Ahmedabad, Gujarat', gradient: 'from-teal-400 to-cyan-500', initial: 'S' },
-            9: { name: 'Arjun Nair', mac: 'I5:J6:K1:L2:M3:N4', profileImg: 'https://i.pravatar.cc/150?img=55', location: 'Jaipur, Rajasthan', gradient: 'from-orange-400 to-red-500', initial: 'A' },
-            10: { name: 'Meera Iyer', mac: 'J7:K1:L2:M3:N4:O5', profileImg: 'https://i.pravatar.cc/150?img=60', location: 'Surat, Gujarat', gradient: 'from-blue-400 to-indigo-500', initial: 'M' },
-            11: { name: 'Karan Malhotra', mac: 'K2:L3:M4:N5:O6:P1', profileImg: 'https://i.pravatar.cc/150?img=5', location: 'Lucknow, Uttar Pradesh', gradient: 'from-green-400 to-emerald-500', initial: 'K' },
-            12: { name: 'Divya Rao', mac: 'L4:M5:N6:O1:P2:Q3', profileImg: 'https://i.pravatar.cc/150?img=10', location: 'Kanpur, Uttar Pradesh', gradient: 'from-pink-400 to-rose-500', initial: 'D' },
-            13: { name: 'Suresh Menon', mac: 'M6:N1:O2:P3:Q4:R5', profileImg: 'https://i.pravatar.cc/150?img=65', location: 'Nagpur, Maharashtra', gradient: 'from-yellow-400 to-amber-500', initial: 'S' },
-            14: { name: 'Neha Agarwal', mac: 'N2:O3:P4:Q5:R6:S1', profileImg: 'https://i.pravatar.cc/150?img=70', location: 'Indore, Madhya Pradesh', gradient: 'from-violet-400 to-purple-500', initial: 'N' },
-            15: { name: 'Rahul Kapoor', mac: 'O4:P5:Q6:R1:S2:T3', profileImg: 'https://i.pravatar.cc/150?img=3', location: 'Thane, Maharashtra', gradient: 'from-cyan-400 to-blue-500', initial: 'R' },
-            16: { name: 'Pooja Verma', mac: 'P6:Q1:R2:S3:T4:U5', profileImg: 'https://i.pravatar.cc/150?img=8', location: 'Bhopal, Madhya Pradesh', gradient: 'from-emerald-400 to-green-500', initial: 'P' },
-            17: { name: 'Aditya Shah', mac: 'Q2:R3:S4:T5:U6:V1', profileImg: 'https://i.pravatar.cc/150?img=13', location: 'Visakhapatnam, Andhra Pradesh', gradient: 'from-red-400 to-pink-500', initial: 'A' },
-            18: { name: 'Sunita Nanda', mac: 'R4:S5:T6:U1:V2:W3', profileImg: 'https://i.pravatar.cc/150?img=18', location: 'Patna, Bihar', gradient: 'from-indigo-400 to-blue-500', initial: 'S' },
-            19: { name: 'Manoj Tiwari', mac: 'S6:T1:U2:V3:W4:X5', profileImg: 'https://i.pravatar.cc/150?img=23', location: 'Vadodara, Gujarat', gradient: 'from-teal-400 to-cyan-500', initial: 'M' },
-            20: { name: 'Deepika Menon', mac: 'T2:U3:V4:W5:X6:Y1', profileImg: 'https://i.pravatar.cc/150?img=28', location: 'Ghaziabad, Uttar Pradesh', gradient: 'from-orange-400 to-yellow-500', initial: 'D' },
-            21: { name: 'Nikhil Gupta', mac: 'U4:V5:W6:X1:Y2:Z3', profileImg: 'https://i.pravatar.cc/150?img=33', location: 'Ludhiana, Punjab', gradient: 'from-purple-400 to-violet-500', initial: 'N' },
-            22: { name: 'Shreya Bhatt', mac: 'V6:W1:X2:Y3:Z4:A5', profileImg: 'https://i.pravatar.cc/150?img=38', location: 'Agra, Uttar Pradesh', gradient: 'from-pink-400 to-red-500', initial: 'S' },
-            23: { name: 'Varun Chawla', mac: 'W2:X3:Y4:Z5:A6:B1', profileImg: 'https://i.pravatar.cc/150?img=43', location: 'Nashik, Maharashtra', gradient: 'from-blue-400 to-cyan-500', initial: 'V' },
-            24: { name: 'Isha Reddy', mac: 'X4:Y5:Z6:A1:B2:C3', profileImg: 'https://i.pravatar.cc/150?img=48', location: 'Faridabad, Haryana', gradient: 'from-green-400 to-teal-500', initial: 'I' },
-            25: { name: 'Yash Agarwal', mac: 'Y6:Z1:A2:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=53', location: 'Meerut, Uttar Pradesh', gradient: 'from-indigo-400 to-purple-500', initial: 'Y' }
+            1: { name: 'Rajesh Kumar', mac: 'A4:B2:C1:D3:E5:F6', profileImg: 'https://i.pravatar.cc/150?img=15', location: 'Mumbai, Maharashtra', gradient: 'from-blue-400 to-purple-500', initial: 'R', firmwareStatus: firmwareStatuses[0], firmwareId: firmwareIds[0], doorCycleTime: doorCycleTimes[0] },
+            2: { name: 'Priya Sharma', mac: 'B5:C3:D2:E4:F6:A1', profileImg: 'https://i.pravatar.cc/150?img=20', location: 'Delhi, NCR', gradient: 'from-green-400 to-teal-500', initial: 'P', firmwareStatus: firmwareStatuses[1], firmwareId: firmwareIds[1], doorCycleTime: doorCycleTimes[1] },
+            3: { name: 'Amit Patel', mac: 'C6:D4:E3:F5:A2:B1', profileImg: 'https://i.pravatar.cc/150?img=25', location: 'Bangalore, Karnataka', gradient: 'from-pink-400 to-red-500', initial: 'A', firmwareStatus: firmwareStatuses[2], firmwareId: firmwareIds[2], doorCycleTime: doorCycleTimes[2] },
+            4: { name: 'Kavita Singh', mac: 'D1:E5:F2:A3:B4:C6', profileImg: 'https://i.pravatar.cc/150?img=30', location: 'Chennai, Tamil Nadu', gradient: 'from-yellow-400 to-orange-500', initial: 'K', firmwareStatus: firmwareStatuses[3], firmwareId: firmwareIds[3], doorCycleTime: doorCycleTimes[3] },
+            5: { name: 'Vikram Reddy', mac: 'E2:F6:A1:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=35', location: 'Hyderabad, Telangana', gradient: 'from-indigo-400 to-blue-500', initial: 'V', firmwareStatus: firmwareStatuses[4], firmwareId: firmwareIds[4], doorCycleTime: doorCycleTimes[4] },
+            6: { name: 'Anjali Desai', mac: 'F3:A4:B5:C1:D2:E6', profileImg: 'https://i.pravatar.cc/150?img=40', location: 'Pune, Maharashtra', gradient: 'from-cyan-400 to-blue-500', initial: 'A', firmwareStatus: firmwareStatuses[5], firmwareId: firmwareIds[5], doorCycleTime: doorCycleTimes[5] },
+            7: { name: 'Rohit Mehta', mac: 'G1:H2:I3:J4:K5:L6', profileImg: 'https://i.pravatar.cc/150?img=45', location: 'Kolkata, West Bengal', gradient: 'from-purple-400 to-pink-500', initial: 'R', firmwareStatus: firmwareStatuses[6], firmwareId: firmwareIds[6], doorCycleTime: doorCycleTimes[6] },
+            8: { name: 'Sneha Joshi', mac: 'H3:I4:J5:K6:L1:M2', profileImg: 'https://i.pravatar.cc/150?img=50', location: 'Ahmedabad, Gujarat', gradient: 'from-teal-400 to-cyan-500', initial: 'S', firmwareStatus: firmwareStatuses[7], firmwareId: firmwareIds[7], doorCycleTime: doorCycleTimes[7] },
+            9: { name: 'Arjun Nair', mac: 'I5:J6:K1:L2:M3:N4', profileImg: 'https://i.pravatar.cc/150?img=55', location: 'Jaipur, Rajasthan', gradient: 'from-orange-400 to-red-500', initial: 'A', firmwareStatus: firmwareStatuses[8], firmwareId: firmwareIds[8], doorCycleTime: doorCycleTimes[8] },
+            10: { name: 'Meera Iyer', mac: 'J7:K1:L2:M3:N4:O5', profileImg: 'https://i.pravatar.cc/150?img=60', location: 'Surat, Gujarat', gradient: 'from-blue-400 to-indigo-500', initial: 'M', firmwareStatus: firmwareStatuses[9], firmwareId: firmwareIds[9], doorCycleTime: doorCycleTimes[9] },
+            11: { name: 'Karan Malhotra', mac: 'K2:L3:M4:N5:O6:P1', profileImg: 'https://i.pravatar.cc/150?img=5', location: 'Lucknow, Uttar Pradesh', gradient: 'from-green-400 to-emerald-500', initial: 'K', firmwareStatus: firmwareStatuses[10], firmwareId: firmwareIds[10], doorCycleTime: doorCycleTimes[10] },
+            12: { name: 'Divya Rao', mac: 'L4:M5:N6:O1:P2:Q3', profileImg: 'https://i.pravatar.cc/150?img=10', location: 'Kanpur, Uttar Pradesh', gradient: 'from-pink-400 to-rose-500', initial: 'D', firmwareStatus: firmwareStatuses[11], firmwareId: firmwareIds[11], doorCycleTime: doorCycleTimes[11] },
+            13: { name: 'Suresh Menon', mac: 'M6:N1:O2:P3:Q4:R5', profileImg: 'https://i.pravatar.cc/150?img=65', location: 'Nagpur, Maharashtra', gradient: 'from-yellow-400 to-amber-500', initial: 'S', firmwareStatus: firmwareStatuses[12], firmwareId: firmwareIds[12], doorCycleTime: doorCycleTimes[12] },
+            14: { name: 'Neha Agarwal', mac: 'N2:O3:P4:Q5:R6:S1', profileImg: 'https://i.pravatar.cc/150?img=70', location: 'Indore, Madhya Pradesh', gradient: 'from-violet-400 to-purple-500', initial: 'N', firmwareStatus: firmwareStatuses[13], firmwareId: firmwareIds[13], doorCycleTime: doorCycleTimes[13] },
+            15: { name: 'Rahul Kapoor', mac: 'O4:P5:Q6:R1:S2:T3', profileImg: 'https://i.pravatar.cc/150?img=3', location: 'Thane, Maharashtra', gradient: 'from-cyan-400 to-blue-500', initial: 'R', firmwareStatus: firmwareStatuses[14], firmwareId: firmwareIds[14], doorCycleTime: doorCycleTimes[14] },
+            16: { name: 'Pooja Verma', mac: 'P6:Q1:R2:S3:T4:U5', profileImg: 'https://i.pravatar.cc/150?img=8', location: 'Bhopal, Madhya Pradesh', gradient: 'from-emerald-400 to-green-500', initial: 'P', firmwareStatus: firmwareStatuses[15], firmwareId: firmwareIds[15], doorCycleTime: doorCycleTimes[15] },
+            17: { name: 'Aditya Shah', mac: 'Q2:R3:S4:T5:U6:V1', profileImg: 'https://i.pravatar.cc/150?img=13', location: 'Visakhapatnam, Andhra Pradesh', gradient: 'from-red-400 to-pink-500', initial: 'A', firmwareStatus: firmwareStatuses[16], firmwareId: firmwareIds[16], doorCycleTime: doorCycleTimes[16] },
+            18: { name: 'Sunita Nanda', mac: 'R4:S5:T6:U1:V2:W3', profileImg: 'https://i.pravatar.cc/150?img=18', location: 'Patna, Bihar', gradient: 'from-indigo-400 to-blue-500', initial: 'S', firmwareStatus: firmwareStatuses[17], firmwareId: firmwareIds[17], doorCycleTime: doorCycleTimes[17] },
+            19: { name: 'Manoj Tiwari', mac: 'S6:T1:U2:V3:W4:X5', profileImg: 'https://i.pravatar.cc/150?img=23', location: 'Vadodara, Gujarat', gradient: 'from-teal-400 to-cyan-500', initial: 'M', firmwareStatus: firmwareStatuses[18], firmwareId: firmwareIds[18], doorCycleTime: doorCycleTimes[18] },
+            20: { name: 'Deepika Menon', mac: 'T2:U3:V4:W5:X6:Y1', profileImg: 'https://i.pravatar.cc/150?img=28', location: 'Ghaziabad, Uttar Pradesh', gradient: 'from-orange-400 to-yellow-500', initial: 'D', firmwareStatus: firmwareStatuses[19], firmwareId: firmwareIds[19], doorCycleTime: doorCycleTimes[19] },
+            21: { name: 'Nikhil Gupta', mac: 'U4:V5:W6:X1:Y2:Z3', profileImg: 'https://i.pravatar.cc/150?img=33', location: 'Ludhiana, Punjab', gradient: 'from-purple-400 to-violet-500', initial: 'N', firmwareStatus: firmwareStatuses[20], firmwareId: firmwareIds[20], doorCycleTime: doorCycleTimes[20] },
+            22: { name: 'Shreya Bhatt', mac: 'V6:W1:X2:Y3:Z4:A5', profileImg: 'https://i.pravatar.cc/150?img=38', location: 'Agra, Uttar Pradesh', gradient: 'from-pink-400 to-red-500', initial: 'S', firmwareStatus: firmwareStatuses[21], firmwareId: firmwareIds[21], doorCycleTime: doorCycleTimes[21] },
+            23: { name: 'Varun Chawla', mac: 'W2:X3:Y4:Z5:A6:B1', profileImg: 'https://i.pravatar.cc/150?img=43', location: 'Nashik, Maharashtra', gradient: 'from-blue-400 to-cyan-500', initial: 'V', firmwareStatus: firmwareStatuses[22], firmwareId: firmwareIds[22], doorCycleTime: doorCycleTimes[22] },
+            24: { name: 'Isha Reddy', mac: 'X4:Y5:Z6:A1:B2:C3', profileImg: 'https://i.pravatar.cc/150?img=48', location: 'Faridabad, Haryana', gradient: 'from-green-400 to-teal-500', initial: 'I', firmwareStatus: firmwareStatuses[23], firmwareId: firmwareIds[23], doorCycleTime: doorCycleTimes[23] },
+            25: { name: 'Yash Agarwal', mac: 'Y6:Z1:A2:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=53', location: 'Meerut, Uttar Pradesh', gradient: 'from-indigo-400 to-purple-500', initial: 'Y', firmwareStatus: firmwareStatuses[24], firmwareId: firmwareIds[24], doorCycleTime: doorCycleTimes[24] }
         };
 
         // Data sets for each firmware
@@ -680,7 +686,7 @@
                 motorCurrent: [65, 70, 75, 80, 85, 82, 78, 75, 72, 68, 70, 75],
                 powerConsumption: 5.8,
                 powerConsumptionHistory: [5.2, 5.4, 5.6, 5.7, 5.8, 5.9, 5.8, 5.7],
-                doorCycles: 32,
+                doorCycles: '32 mins',
                 doorCyclesHistory: [5, 8, 12, 15, 18, 22, 28, 32],
                 elevatorSpeed: 1.2,
                 temperature: [40, 45, 50, 55, 60, 65, 68, 70],
@@ -691,7 +697,7 @@
                 motorCurrent: [70, 75, 80, 85, 90, 88, 85, 82, 80, 78, 75, 80],
                 powerConsumption: 6.5,
                 powerConsumptionHistory: [6.0, 6.2, 6.3, 6.4, 6.5, 6.6, 6.5, 6.4],
-                doorCycles: 45,
+                doorCycles: '2 hours',
                 doorCyclesHistory: [8, 12, 18, 22, 28, 35, 40, 45],
                 elevatorSpeed: 1.4,
                 temperature: [42, 48, 55, 60, 65, 70, 72, 75],
@@ -702,7 +708,7 @@
                 motorCurrent: [75, 80, 85, 90, 95, 92, 88, 85, 82, 80, 78, 85],
                 powerConsumption: 7.2,
                 powerConsumptionHistory: [6.8, 7.0, 7.1, 7.2, 7.3, 7.2, 7.1, 7.0],
-                doorCycles: 58,
+                doorCycles: '1 day',
                 doorCyclesHistory: [10, 15, 22, 30, 38, 45, 52, 58],
                 elevatorSpeed: 0.9,
                 temperature: [45, 52, 60, 68, 75, 80, 82, 85],
@@ -820,6 +826,7 @@
         // Update all dashboard elements
         function updateDashboard(firmware) {
             const data = firmwareData[firmware];
+            const user = userData[currentUserId];
             
             // Update Controller Load
             updateControllerLoad(data.controllerLoad);
@@ -830,8 +837,8 @@
             // Update Power Consumption
             updatePowerConsumption(data.powerConsumption, data.powerConsumptionHistory);
             
-            // Update Door Cycles
-            updateDoorCycles(data.doorCycles, data.doorCyclesHistory);
+            // Update Door Cycles (use user's door cycle time)
+            updateDoorCycles(user.doorCycleTime, data.doorCyclesHistory);
             
             // Update Elevator Speed
             updateElevatorSpeed(data.elevatorSpeed);
@@ -978,13 +985,23 @@
 
         // Update Door Cycles
         function updateDoorCycles(value, history) {
-            document.getElementById('doorCyclesValue').textContent = value;
+            const doorCyclesValueEl = document.getElementById('doorCyclesValue');
+            doorCyclesValueEl.textContent = value;
+            
+            // Check if value is in minutes (red) or hours/days (green)
+            const isMinutes = value.toLowerCase().includes('mins') || value.toLowerCase().includes('min');
+            const statusColor = isMinutes ? 'text-red-400' : 'text-green-400';
+            doorCyclesValueEl.className = `text-3xl font-bold ${statusColor}`;
             
             const ctx = document.getElementById('doorCyclesChart');
             
             if (doorCyclesChart) {
                 doorCyclesChart.destroy();
             }
+            
+            // Set chart color based on time status
+            const chartColor = isMinutes ? 'rgba(239, 68, 68, 0.8)' : 'rgba(34, 197, 94, 0.8)';
+            const chartBorderColor = isMinutes ? 'rgb(239, 68, 68)' : 'rgb(34, 197, 94)';
             
             doorCyclesChart = new Chart(ctx, {
                 type: 'bar',
@@ -993,8 +1010,8 @@
                     datasets: [{
                         label: 'Cycles',
                         data: history,
-                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: chartColor,
+                        borderColor: chartBorderColor,
                         borderWidth: 0,
                         borderRadius: 4
                     }]
@@ -1139,29 +1156,37 @@
             // Get current time once for all elevators
             const currentTime = getCurrentTime12Hour();
             
-            Object.keys(firmwareData).forEach(firmwareNum => {
-                const data = firmwareData[firmwareNum];
-                        const row = document.createElement('tr');
-                const isActive = parseInt(firmwareNum) === currentFirmware;
-                const isMismatch = data.firmwareInfo.status === 'Mismatch';
+            // Random firmware IDs pool
+            const firmwareIdPool = ['1.2.104', '1.2.102', '1.2:105', '1.2.106', '1.2.103', '1.2:107', '1.2.108', '1.2:109', '1.2.110', '1.2.111', '1.2:112', '1.2.113', '1.2.114', '1.2:115', '1.2.116', '1.2:117', '1.2.118', '1.2.119', '1.2:120', '1.2.121', '1.2:122', '1.2.123', '1.2.124', '1.2:125', '1.2.126'];
+            const statusPool = ['OK', 'Mismatch', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK'];
+            
+            // Show all 25 elevators with completely random data
+            for (let i = 1; i <= 25; i++) {
+                const row = document.createElement('tr');
+                // Generate completely random firmware ID and status
+                const randomFirmwareId = firmwareIdPool[Math.floor(Math.random() * firmwareIdPool.length)];
+                const randomStatus = statusPool[Math.floor(Math.random() * statusPool.length)];
+                
+                const isActive = i === currentUserId;
+                const isMismatch = randomStatus === 'Mismatch' || randomStatus === 'Update Required';
                 
                 row.className = `hover:bg-gray-600/30 transition-all duration-300 ${isActive ? 'bg-green-500/10' : ''}`;
                 
                 const statusColor = isMismatch ? 'text-red-400' : 'text-green-400';
-                const firmwareIdColor = isMismatch ? 'text-red-400' : 'text-green-400';
+                const firmwareIdColor = randomFirmwareId.includes(':') ? 'text-red-400' : 'text-green-400';
                 const statusIcon = isMismatch ? '' : '<svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
                 
-                        row.innerHTML = `
-                    <td class="px-4 py-3 text-sm font-medium text-white">Elevator ${firmwareNum}</td>
-                    <td class="px-4 py-3 text-sm ${firmwareIdColor}">${data.firmwareInfo.id}</td>
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm font-medium text-white">Elevator ${i}</td>
+                    <td class="px-4 py-3 text-sm ${firmwareIdColor}">${randomFirmwareId}</td>
                     <td class="px-4 py-3 text-sm font-semibold ${statusColor}">
-                        ${statusIcon}${data.firmwareInfo.status}
-                            </td>
+                        ${statusIcon}${randomStatus}
+                    </td>
                     <td class="px-4 py-3 text-sm text-gray-400">${currentTime}</td>
-                        `;
-                        
-                        tbody.appendChild(row);
-            });
+                `;
+                
+                tbody.appendChild(row);
+            }
         }
     </script>
 </body>
