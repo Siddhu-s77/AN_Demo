@@ -57,12 +57,14 @@
         .sidebar:not(.collapsed) .sidebar-tooltip {
             display: none !important;
         }
-        .sidebar.collapsed .firmware-btn {
+        .sidebar.collapsed .firmware-btn,
+        .sidebar.collapsed .user-btn {
             justify-content: center;
             padding-left: 0.75rem;
             padding-right: 0.75rem;
         }
-        .sidebar.collapsed .firmware-btn .w-10 {
+        .sidebar.collapsed .firmware-btn .w-10,
+        .sidebar.collapsed .user-btn .w-12 {
             margin: 0 auto;
         }
     </style>
@@ -72,22 +74,22 @@
     <header class="bg-gray-800/90 backdrop-blur-sm border-b border-gray-700/50 shadow-lg">
         <div class="flex items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6">
             <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300 tracking-tight">Elevator Monitoring Dashboard</h1>
-            <button id="refreshBtn" class="bg-gray-700/80 hover:bg-gray-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg transition-all duration-300 flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 font-medium text-xs sm:text-sm border border-gray-600/50 hover:border-gray-500">
-                <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
-                Refresh
-            </button>
+                <button id="refreshBtn" class="bg-gray-700/80 hover:bg-gray-600 text-white px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 rounded-lg transition-all duration-300 flex items-center gap-1.5 sm:gap-2 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 font-medium text-xs sm:text-sm border border-gray-600/50 hover:border-gray-500">
+                    <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Refresh
+                </button>
         </div>
     </header>
 
     <!-- Main Layout with Sidebar -->
     <div class="flex">
-        <!-- Left Sidebar - Collapsible/Hoverable -->
+        <!-- Left Sidebar - WhatsApp Style Chat List -->
         <aside id="sidebar" class="sidebar bg-[#202C33] border-r border-gray-700/30 min-h-screen flex flex-col transition-all duration-300 relative">
             <!-- Sidebar Header -->
             <div class="bg-[#111B21] px-4 py-4 border-b border-gray-700/30 flex items-center justify-between">
-                <h2 class="sidebar-text text-lg font-semibold text-white whitespace-nowrap">Elevators</h2>
+                <h2 class="sidebar-text text-lg font-semibold text-white whitespace-nowrap">Chats</h2>
                 <button id="sidebarToggle" class="p-2 hover:bg-[#2A3942] rounded-lg transition-colors">
                     <svg id="toggleIcon" class="w-5 h-5 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
@@ -95,59 +97,128 @@
                 </button>
             </div>
             
-            <!-- Elevator List -->
+            <!-- User Chat List -->
             <div class="flex-1 overflow-y-auto py-2">
-                <button id="firmwareBtn1" class="firmware-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-[#2A3942]" data-firmware="1">
-                    <!-- Avatar Circle -->
-                    <div class="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-base">1</span>
+                <button id="userBtn1" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-[#2A3942]" data-user="1">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500">
+                        <img src="https://i.pravatar.cc/150?img=1" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>A</span>'">
                     </div>
                     <!-- Content -->
                     <div class="sidebar-content flex-1 min-w-0">
-                        <h3 class="text-white font-medium text-base whitespace-nowrap">Elevator 1</h3>
-                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">Status: OK</p>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Alpha</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: A4:B2:C1:D3:E5:F6</p>
                     </div>
                     <!-- Tooltip for collapsed state -->
                     <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
-                        Elevator 1
+                        Site Alpha
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
                             <div class="border-4 border-transparent border-r-gray-900"></div>
                         </div>
                     </div>
                 </button>
                 
-                <button id="firmwareBtn2" class="firmware-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-firmware="2">
-                    <!-- Avatar Circle -->
-                    <div class="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-base">2</span>
+                <button id="userBtn2" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-user="2">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-green-400 to-teal-500">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>B</span>'">
                     </div>
                     <!-- Content -->
                     <div class="sidebar-content flex-1 min-w-0">
-                        <h3 class="text-white font-medium text-base whitespace-nowrap">Elevator 2</h3>
-                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">Status: OK</p>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Beta</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: B5:C3:D2:E4:F6:A1</p>
                     </div>
                     <!-- Tooltip for collapsed state -->
                     <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
-                        Elevator 2
+                        Site Beta
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
                             <div class="border-4 border-transparent border-r-gray-900"></div>
                         </div>
                     </div>
                 </button>
                 
-                <button id="firmwareBtn3" class="firmware-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-firmware="3">
-                    <!-- Avatar Circle -->
-                    <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
-                        <span class="text-white font-bold text-base">3</span>
+                <button id="userBtn3" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-user="3">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-pink-400 to-red-500">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>C</span>'">
                     </div>
                     <!-- Content -->
                     <div class="sidebar-content flex-1 min-w-0">
-                        <h3 class="text-white font-medium text-base whitespace-nowrap">Elevator 3</h3>
-                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">Status: Mismatch</p>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Gamma</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: C6:D4:E3:F5:A2:B1</p>
                     </div>
                     <!-- Tooltip for collapsed state -->
                     <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
-                        Elevator 3
+                        Site Gamma
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
+                            <div class="border-4 border-transparent border-r-gray-900"></div>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="userBtn4" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-user="4">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-yellow-400 to-orange-500">
+                        <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>D</span>'">
+                    </div>
+                    <!-- Content -->
+                    <div class="sidebar-content flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Delta</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: D1:E5:F2:A3:B4:C6</p>
+                    </div>
+                    <!-- Tooltip for collapsed state -->
+                    <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
+                        Site Delta
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
+                            <div class="border-4 border-transparent border-r-gray-900"></div>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="userBtn5" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-user="5">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-indigo-400 to-blue-500">
+                        <img src="https://i.pravatar.cc/150?img=68" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>E</span>'">
+                    </div>
+                    <!-- Content -->
+                    <div class="sidebar-content flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Echo</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: E2:F6:A1:B3:C4:D5</p>
+                    </div>
+                    <!-- Tooltip for collapsed state -->
+                    <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
+                        Site Echo
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
+                            <div class="border-4 border-transparent border-r-gray-900"></div>
+                        </div>
+                    </div>
+                </button>
+                
+                <button id="userBtn6" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-transparent" data-user="6">
+                    <!-- Profile Picture -->
+                    <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-cyan-400 to-blue-500">
+                        <img src="https://i.pravatar.cc/150?img=70" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-lg\'>F</span>'">
+                    </div>
+                    <!-- Content -->
+                    <div class="sidebar-content flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-white font-medium text-base whitespace-nowrap">Site Foxtrot</h3>
+                        </div>
+                        <p class="text-gray-400 text-xs mt-0.5 truncate sidebar-text">MAC: F3:A4:B5:C1:D2:E6</p>
+                    </div>
+                    <!-- Tooltip for collapsed state -->
+                    <div class="sidebar-tooltip absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 whitespace-nowrap">
+                        Site Foxtrot
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
                             <div class="border-4 border-transparent border-r-gray-900"></div>
                         </div>
@@ -156,7 +227,7 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
+    <!-- Main Content -->
         <main class="flex-1 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-16">
@@ -179,6 +250,30 @@
 
         <!-- Dashboard Content -->
         <div id="dashboardContent" class="hidden">
+            <!-- Profile Header -->
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 mb-6 shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                <div class="flex items-center justify-between">
+                    <!-- Left Side: Profile DP and Name -->
+                    <div class="flex items-center gap-4">
+                        <div id="profilePicture" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500">
+                            <img id="profileImage" src="https://i.pravatar.cc/150?img=1" alt="Profile" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.classList.add('flex', 'items-center', 'justify-center'); this.parentElement.innerHTML='<span class=\'text-white font-bold text-2xl\'>A</span>'">
+                        </div>
+                        <div>
+                            <h3 id="profileName" class="text-white font-semibold text-lg sm:text-xl">Site Alpha</h3>
+                            <p id="profileMac" class="text-gray-400 text-xs sm:text-sm mt-1">MAC: A4:B2:C1:D3:E5:F6</p>
+                        </div>
+                    </div>
+                    <!-- Right Side: Location -->
+                    <div class="flex items-center gap-2 text-gray-300">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        <span id="locationText" class="text-sm sm:text-base font-medium">New York, USA</span>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Elevator Monitoring Panels -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6">
                 <!-- Controller Load -->
@@ -188,7 +283,7 @@
                         <canvas id="controllerLoadChart"></canvas>
                         <div class="gauge-value" id="controllerLoadValue">54%</div>
                     </div>
-                </div>
+                        </div>
 
                 <!-- Motor Current -->
                 <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
@@ -196,7 +291,7 @@
                     <div class="h-32 sm:h-40 md:h-48">
                         <canvas id="motorCurrentChart"></canvas>
                     </div>
-                </div>
+                </div> 
 
                 <!-- Power Consumption -->
                 <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
@@ -214,7 +309,7 @@
                     <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">Door Cycles</h2>
                     <div class="text-center mb-2">
                         <p class="text-white text-3xl sm:text-4xl md:text-5xl font-bold" id="doorCyclesValue">32</p>
-                    </div>
+                        </div>
                     <div class="h-24 sm:h-32 md:h-40">
                         <canvas id="doorCyclesChart"></canvas>
                     </div>
@@ -236,26 +331,26 @@
                     <div class="h-32 sm:h-40 md:h-48">
                         <canvas id="temperatureChart"></canvas>
                     </div>
+                    </div>
                 </div>
-            </div>
 
             <!-- Firmware Table -->
             <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
                 <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">Firmware Status</h2>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead>
-                            <tr class="border-b border-gray-600/50">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-gray-600/50">
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Firmware</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Firmware ID</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Last Check</th>
-                            </tr>
-                        </thead>
+                                </tr>
+                            </thead>
                         <tbody id="firmwareTableBody" class="divide-y divide-gray-600/30">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
                 </div>
             </div>
         </div>
@@ -271,8 +366,61 @@
         let elevatorSpeedChart = null;
         let temperatureChart = null;
 
-        // Current selected firmware
+        // Current selected firmware and user
         let currentFirmware = 1;
+        let currentUserId = 1;
+
+        // User data with profile info and locations
+        const userData = {
+            1: {
+                name: 'Site Alpha',
+                mac: 'A4:B2:C1:D3:E5:F6',
+                profileImg: 'https://i.pravatar.cc/150?img=1',
+                location: 'New York, USA',
+                gradient: 'from-blue-400 to-purple-500',
+                initial: 'A'
+            },
+            2: {
+                name: 'Site Beta',
+                mac: 'B5:C3:D2:E4:F6:A1',
+                profileImg: 'https://i.pravatar.cc/150?img=12',
+                location: 'London, UK',
+                gradient: 'from-green-400 to-teal-500',
+                initial: 'B'
+            },
+            3: {
+                name: 'Site Gamma',
+                mac: 'C6:D4:E3:F5:A2:B1',
+                profileImg: 'https://i.pravatar.cc/150?img=33',
+                location: 'Tokyo, Japan',
+                gradient: 'from-pink-400 to-red-500',
+                initial: 'C'
+            },
+            4: {
+                name: 'Site Delta',
+                mac: 'D1:E5:F2:A3:B4:C6',
+                profileImg: 'https://i.pravatar.cc/150?img=47',
+                location: 'Paris, France',
+                gradient: 'from-yellow-400 to-orange-500',
+                initial: 'D'
+            },
+            5: {
+                name: 'Site Echo',
+                mac: 'E2:F6:A1:B3:C4:D5',
+                profileImg: 'https://i.pravatar.cc/150?img=68',
+                location: 'Sydney, Australia',
+                gradient: 'from-indigo-400 to-blue-500',
+                initial: 'E'
+            },
+            6: {
+                name: 'Site Foxtrot',
+                mac: 'F3:A4:B5:C1:D2:E6',
+                profileImg: 'https://i.pravatar.cc/150?img=70',
+                location: 'Dubai, UAE',
+                gradient: 'from-cyan-400 to-blue-500',
+                initial: 'F'
+            }
+        };
 
         // Data sets for each firmware
         const firmwareData = {
@@ -327,11 +475,20 @@
                 }
             });
 
-            // Setup firmware buttons
-            document.querySelectorAll('.firmware-btn').forEach(btn => {
+            // User to Firmware mapping (6 users mapped to 3 firmware sets)
+            // User 1->Firmware 1, User 2->Firmware 2, User 3->Firmware 3
+            // User 4->Firmware 1, User 5->Firmware 2, User 6->Firmware 3
+            const userToFirmwareMap = {
+                1: 1, 2: 2, 3: 3,
+                4: 1, 5: 2, 6: 3
+            };
+
+            // Setup user buttons
+            document.querySelectorAll('.user-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const firmware = parseInt(btn.dataset.firmware);
-                    selectFirmware(firmware);
+                    const userId = parseInt(btn.dataset.user);
+                    const firmware = userToFirmwareMap[userId];
+                    selectUser(userId, firmware);
                 });
             });
 
@@ -343,17 +500,18 @@
             // Load initial data
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('dashboardContent').classList.remove('hidden');
-            updateDashboard(1);
+            selectUser(1, 1);
         });
 
-        // Select firmware and update dashboard
-        function selectFirmware(firmware) {
+        // Select user and update dashboard
+        function selectUser(userId, firmware) {
             currentFirmware = firmware;
+            currentUserId = userId;
             
             // Update button styles (WhatsApp style)
-            document.querySelectorAll('.firmware-btn').forEach(btn => {
-                const btnFirmware = parseInt(btn.dataset.firmware);
-                if (btnFirmware === firmware) {
+            document.querySelectorAll('.user-btn').forEach(btn => {
+                const btnUserId = parseInt(btn.dataset.user);
+                if (btnUserId === userId) {
                     // Active state - WhatsApp dark green background
                     btn.classList.remove('bg-transparent');
                     btn.classList.add('bg-[#2A3942]');
@@ -364,7 +522,50 @@
                 }
             });
 
+            // Update profile header
+            updateProfileHeader(userId);
+
             updateDashboard(firmware);
+        }
+
+        // Update profile header with user info
+        function updateProfileHeader(userId) {
+            const user = userData[userId];
+            if (!user) return;
+
+            // Update profile picture
+            const profilePicture = document.getElementById('profilePicture');
+            const profileImage = document.getElementById('profileImage');
+            
+            // Update gradient background
+            profilePicture.className = `w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br ${user.gradient}`;
+            
+            // Reset and show image
+            if (profilePicture.querySelector('span')) {
+                profilePicture.innerHTML = '';
+                profilePicture.appendChild(profileImage);
+            }
+            profileImage.style.display = 'block';
+            profileImage.src = user.profileImg;
+            profileImage.alt = user.name;
+            
+            profileImage.onerror = function() {
+                this.style.display = 'none';
+                if (!profilePicture.querySelector('span')) {
+                    profilePicture.classList.add('flex', 'items-center', 'justify-center');
+                    const initialSpan = document.createElement('span');
+                    initialSpan.className = 'text-white font-bold text-2xl';
+                    initialSpan.textContent = user.initial;
+                    profilePicture.appendChild(initialSpan);
+                }
+            };
+
+            // Update name and MAC
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileMac').textContent = `MAC: ${user.mac}`;
+
+            // Update location
+            document.getElementById('locationText').textContent = user.location;
         }
 
         // Update all dashboard elements
@@ -391,21 +592,6 @@
             
             // Update Firmware Table
             updateFirmwareTable();
-            
-            // Update Sidebar Status
-            updateSidebarStatus();
-        }
-        
-        // Update sidebar status text
-        function updateSidebarStatus() {
-            document.querySelectorAll('.firmware-btn').forEach(btn => {
-                const firmware = parseInt(btn.dataset.firmware);
-                const data = firmwareData[firmware];
-                const statusText = btn.querySelector('p.text-gray-400');
-                if (statusText) {
-                    statusText.textContent = `Status: ${data.firmwareInfo.status}`;
-                }
-            });
         }
 
         // Update Controller Load (Gauge Chart)
@@ -706,7 +892,7 @@
             
             Object.keys(firmwareData).forEach(firmwareNum => {
                 const data = firmwareData[firmwareNum];
-                const row = document.createElement('tr');
+                        const row = document.createElement('tr');
                 const isActive = parseInt(firmwareNum) === currentFirmware;
                 const isMismatch = data.firmwareInfo.status === 'Mismatch';
                 
@@ -716,16 +902,16 @@
                 const firmwareIdColor = isMismatch ? 'text-red-400' : 'text-green-400';
                 const statusIcon = isMismatch ? '' : '<svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
                 
-                row.innerHTML = `
+                        row.innerHTML = `
                     <td class="px-4 py-3 text-sm font-medium text-white">Elevator ${firmwareNum}</td>
                     <td class="px-4 py-3 text-sm ${firmwareIdColor}">${data.firmwareInfo.id}</td>
                     <td class="px-4 py-3 text-sm font-semibold ${statusColor}">
                         ${statusIcon}${data.firmwareInfo.status}
-                    </td>
+                            </td>
                     <td class="px-4 py-3 text-sm text-gray-400">${currentTime}</td>
-                `;
-                
-                tbody.appendChild(row);
+                        `;
+                        
+                        tbody.appendChild(row);
             });
         }
     </script>
