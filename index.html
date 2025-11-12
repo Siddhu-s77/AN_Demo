@@ -67,6 +67,14 @@
         .sidebar.collapsed .user-btn .w-12 {
             margin: 0 auto;
         }
+        /* Hide scrollbar but keep scrolling functionality */
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari and Opera */
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
@@ -86,9 +94,9 @@
     <!-- Main Layout with Sidebar -->
     <div class="flex">
         <!-- Left Sidebar - WhatsApp Style Chat List -->
-        <aside id="sidebar" class="sidebar bg-[#202C33] border-r border-gray-700/30 min-h-screen flex flex-col transition-all duration-300 relative">
+        <aside id="sidebar" class="sidebar bg-[#202C33] border-r border-gray-700/30 h-screen flex flex-col transition-all duration-300 relative">
             <!-- Sidebar Header -->
-            <div class="bg-[#111B21] px-4 py-4 border-b border-gray-700/30 flex items-center justify-between">
+            <div class="bg-[#111B21] px-4 py-4 border-b border-gray-700/30 flex items-center justify-between flex-shrink-0">
                 <h2 class="sidebar-text text-lg font-semibold text-white whitespace-nowrap">Chats</h2>
                 <button id="sidebarToggle" class="p-2 hover:bg-[#2A3942] rounded-lg transition-colors">
                     <svg id="toggleIcon" class="w-5 h-5 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,7 +106,7 @@
             </div>
             
             <!-- User Chat List -->
-            <div class="flex-1 overflow-y-auto py-2">
+            <div class="flex-1 py-2 overflow-hidden">
                 <button id="userBtn1" class="user-btn group relative w-full px-4 py-3 hover:bg-[#2A3942] active:bg-[#202C33] transition-all duration-150 flex items-center gap-3 cursor-pointer border-b border-gray-700/20 bg-[#2A3942]" data-user="1">
                     <!-- Profile Picture -->
                     <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-400 to-purple-500">
@@ -227,8 +235,8 @@
             </div>
         </aside>
 
-    <!-- Main Content -->
-        <main class="flex-1 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <!-- Main Content -->
+        <main class="flex-1 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 h-screen overflow-y-auto hide-scrollbar">
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-16">
             <div class="inline-block animate-spin rounded-full h-14 w-14 border-4 border-gray-700 border-t-green-500 border-r-green-500"></div>
@@ -917,3 +925,4 @@
     </script>
 </body>
 </html>
+
