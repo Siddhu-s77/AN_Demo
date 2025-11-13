@@ -75,6 +75,13 @@
         .hide-scrollbar::-webkit-scrollbar {
             display: none;  /* Chrome, Safari and Opera */
         }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
@@ -609,13 +616,24 @@
                 </div>
 
             <!-- Firmware Table -->
-            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
-                <h2 class="text-xs sm:text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">Firmware Status</h2>
-                <div class="overflow-x-auto">
+            <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm mb-6">
+                <button id="firmwareToggleBtn" class="w-full flex items-center justify-between mb-4 group cursor-pointer hover:bg-gray-600/30 rounded-lg px-3 py-2 transition-all duration-300 active:scale-95">
+                    <h2 class="text-xs sm:text-sm font-semibold text-gray-300 uppercase tracking-wider group-hover:text-white transition-colors duration-300">Firmware Status</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">Click to expand</span>
+                        <div class="relative">
+                            <svg id="firmwareArrowIcon" class="w-6 h-6 text-blue-400 group-hover:text-blue-300 transition-all duration-300 group-hover:scale-110 animate-bounce-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                            <div class="absolute inset-0 bg-blue-400/20 rounded-full blur-md group-hover:bg-blue-400/30 transition-all duration-300 animate-pulse"></div>
+                        </div>
+                    </div>
+                </button>
+                <div id="firmwareTableContainer" class="overflow-x-auto transition-all duration-300 max-h-96 overflow-y-auto hide-scrollbar">
                         <table class="min-w-full">
-                            <thead>
+                            <thead class="sticky top-0 bg-gray-700/95 backdrop-blur-sm z-10">
                                 <tr class="border-b border-gray-600/50">
-                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Firmware</th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Client</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Firmware ID</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold text-gray-300 uppercase tracking-wider">Last Check</th>
@@ -626,6 +644,108 @@
                             </tbody>
                         </table>
                 </div>
+            </div>
+
+            <!-- Advanced Diagnostics Section -->
+            <div class="mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">Advanced Diagnostics</h2>
+                        <p class="text-xs text-gray-400 mt-1">Comprehensive system analysis and monitoring</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="refreshDiagnosticsBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Refresh
+                        </button>
+                        <button id="exportDiagnosticsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Health Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -mr-10 -mt-10"></div>
+                        <div class="relative">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">System Health</h3>
+                                <div id="systemHealthIndicator" class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                            </div>
+                            <p id="systemHealthValue" class="text-3xl font-bold text-white mb-1">92%</p>
+                            <div class="w-full bg-gray-600 rounded-full h-2 mb-2">
+                                <div id="systemHealthBar" class="bg-gradient-to-r from-green-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: 92%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400">All systems operational</p>
+                            <div class="mt-2 flex items-center gap-2 text-xs">
+                                <span class="text-green-400">↑ 2%</span>
+                                <span class="text-gray-500">vs last week</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Errors</h3>
+                            <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <p id="activeErrorsValue" class="text-2xl font-bold text-white">2</p>
+                        <p class="text-xs text-gray-400 mt-1">Minor issues detected</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Uptime</h3>
+                            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <p id="uptimeValue" class="text-2xl font-bold text-white">45d</p>
+                        <p class="text-xs text-gray-400 mt-1">Continuous operation</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-4 fade-in card-hover shadow-xl border border-gray-600/50 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Maintenance Due</h3>
+                            <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <p id="maintenanceDueValue" class="text-2xl font-bold text-white">12d</p>
+                        <p class="text-xs text-gray-400 mt-1">Scheduled service</p>
+                    </div>
+                </div>
+
+                <!-- Historical Trends Chart -->
+                <div class="bg-gradient-to-br from-gray-700 via-gray-750 to-gray-800 rounded-xl p-4 sm:p-6 fade-in card-hover shadow-2xl border border-gray-600/50 backdrop-blur-sm mb-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-green-500/5 rounded-full -ml-12 -mb-12"></div>
+                    <div class="relative">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+                            <div>
+                                <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-1">System Health Trends</h3>
+                                <p class="text-xs text-gray-400" id="trendsPeriodText">Last 7 Days</p>
+                            </div>
+                            <div class="flex gap-2 bg-gray-600/50 p-1 rounded-lg">
+                                <button class="diagnosticTimeBtn active text-xs px-4 py-2 bg-blue-600 text-white rounded-md font-medium transition-all duration-300 hover:bg-blue-700 shadow-lg" data-period="7d">7D</button>
+                                <button class="diagnosticTimeBtn text-xs px-4 py-2 bg-transparent text-gray-300 rounded-md font-medium transition-all duration-300 hover:bg-gray-600/50 hover:text-white" data-period="30d">30D</button>
+                                <button class="diagnosticTimeBtn text-xs px-4 py-2 bg-transparent text-gray-300 rounded-md font-medium transition-all duration-300 hover:bg-gray-600/50 hover:text-white" data-period="90d">90D</button>
+                            </div>
+                        </div>
+                        <div class="h-72 bg-gray-800/30 rounded-lg p-3 border border-gray-600/30">
+                            <canvas id="healthTrendsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -639,6 +759,7 @@
         let doorCyclesChart = null;
         let elevatorSpeedChart = null;
         let temperatureChart = null;
+        let healthTrendsChart = null;
 
         // Current selected firmware and user
         let currentFirmware = 1;
@@ -678,6 +799,54 @@
             24: { name: 'Isha Reddy', mac: 'X4:Y5:Z6:A1:B2:C3', profileImg: 'https://i.pravatar.cc/150?img=48', location: 'Faridabad, Haryana', gradient: 'from-green-400 to-teal-500', initial: 'I', firmwareStatus: firmwareStatuses[23], firmwareId: firmwareIds[23], doorCycleTime: doorCycleTimes[23] },
             25: { name: 'Yash Agarwal', mac: 'Y6:Z1:A2:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=53', location: 'Meerut, Uttar Pradesh', gradient: 'from-indigo-400 to-purple-500', initial: 'Y', firmwareStatus: firmwareStatuses[24], firmwareId: firmwareIds[24], doorCycleTime: doorCycleTimes[24] }
         };
+
+        // Advanced Diagnostics Data
+        const diagnosticsData = {
+            errorLogs: [
+                { time: '10:45 AM', type: 'warning', message: 'Door sensor calibration required', component: 'Door System' },
+                { time: '09:32 AM', type: 'error', message: 'Motor temperature exceeded threshold', component: 'Motor' },
+                { time: '08:15 AM', type: 'info', message: 'Scheduled maintenance completed', component: 'System' },
+                { time: '07:58 AM', type: 'warning', message: 'Power consumption spike detected', component: 'Power System' },
+                { time: '06:20 AM', type: 'info', message: 'System startup completed successfully', component: 'System' }
+            ],
+            components: [
+                { name: 'Motor Controller', status: 'operational', health: 95 },
+                { name: 'Door Mechanism', status: 'warning', health: 78 },
+                { name: 'Safety Brakes', status: 'operational', health: 98 },
+                { name: 'Cable System', status: 'operational', health: 92 },
+                { name: 'Control Panel', status: 'operational', health: 88 },
+                { name: 'Sensors Array', status: 'operational', health: 91 }
+            ],
+            maintenanceAlerts: [
+                { priority: 'high', title: 'Lubrication Required', description: 'Motor bearings need lubrication', dueDate: '3 days' },
+                { priority: 'medium', title: 'Filter Replacement', description: 'Air filter replacement due', dueDate: '7 days' },
+                { priority: 'low', title: 'Routine Inspection', description: 'Monthly safety inspection', dueDate: '12 days' }
+            ]
+        };
+
+        // Export Diagnostics Report
+        function exportDiagnosticsReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                systemHealth: document.getElementById('systemHealthValue').textContent,
+                activeErrors: document.getElementById('activeErrorsValue').textContent,
+                uptime: document.getElementById('uptimeValue').textContent,
+                maintenanceDue: document.getElementById('maintenanceDueValue').textContent,
+                errorLogs: diagnosticsData.errorLogs,
+                components: diagnosticsData.components,
+                maintenanceAlerts: diagnosticsData.maintenanceAlerts
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diagnostics-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
 
         // Data sets for each firmware
         const firmwareData = {
@@ -751,6 +920,67 @@
             document.getElementById('refreshBtn').addEventListener('click', () => {
                 updateDashboard(currentFirmware);
             });
+
+            // Export diagnostics button
+            const exportBtn = document.getElementById('exportDiagnosticsBtn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', exportDiagnosticsReport);
+            }
+
+            // Refresh diagnostics button
+            const refreshDiagnosticsBtn = document.getElementById('refreshDiagnosticsBtn');
+            if (refreshDiagnosticsBtn) {
+                refreshDiagnosticsBtn.addEventListener('click', () => {
+                    updateAdvancedDiagnostics();
+                });
+            }
+
+            // Time period buttons for trends
+            document.querySelectorAll('.diagnosticTimeBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.diagnosticTimeBtn').forEach(b => {
+                        b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                        b.classList.add('bg-transparent', 'text-gray-300');
+                    });
+                    btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                    btn.classList.remove('bg-transparent', 'text-gray-300');
+                    const period = btn.dataset.period;
+                    updateHealthTrendsChart(period);
+                });
+            });
+
+            // Firmware Status Toggle
+            const firmwareToggleBtn = document.getElementById('firmwareToggleBtn');
+            const firmwareTableContainer = document.getElementById('firmwareTableContainer');
+            const firmwareArrowIcon = document.getElementById('firmwareArrowIcon');
+            
+            if (firmwareToggleBtn && firmwareTableContainer) {
+                let isExpanded = false;
+                
+                // Initial state - collapsed with animation
+                firmwareTableContainer.style.maxHeight = '0';
+                firmwareTableContainer.style.opacity = '0';
+                firmwareTableContainer.style.overflow = 'hidden';
+                firmwareArrowIcon.style.transform = 'rotate(-90deg)';
+                firmwareArrowIcon.classList.add('animate-bounce-slow');
+                
+                firmwareToggleBtn.addEventListener('click', () => {
+                    isExpanded = !isExpanded;
+                    if (isExpanded) {
+                        firmwareTableContainer.style.maxHeight = '384px'; // max-h-96 = 384px
+                        firmwareTableContainer.style.opacity = '1';
+                        firmwareTableContainer.style.overflowY = 'auto';
+                        firmwareArrowIcon.style.transform = 'rotate(0deg) scale(1)';
+                        firmwareArrowIcon.classList.remove('animate-bounce-slow');
+                    } else {
+                        firmwareTableContainer.style.maxHeight = '0';
+                        firmwareTableContainer.style.opacity = '0';
+                        firmwareTableContainer.style.overflow = 'hidden';
+                        firmwareArrowIcon.style.transform = 'rotate(-90deg) scale(1)';
+                        firmwareArrowIcon.classList.add('animate-bounce-slow');
+                    }
+                });
+            }
 
             // Load initial data
             document.getElementById('loadingState').classList.add('hidden');
@@ -831,6 +1061,9 @@
             
             // Update Firmware Table
             updateFirmwareTable();
+            
+            // Update Advanced Diagnostics
+            updateAdvancedDiagnostics();
         }
 
         // Update Controller Load (Gauge Chart)
@@ -1131,7 +1364,16 @@
             return `Today, ${hoursStr}:${minutes} ${ampm}`;
         }
 
-        // Update Firmware Table
+        // Random Indian Names Pool
+        const randomIndianNames = [
+            'Arvind Deshmukh', 'Bhavana Nair', 'Chandan Reddy', 'Deepak Joshi', 'Ekta Verma',
+            'Farhan Khan', 'Gauri Iyer', 'Harsh Mehta', 'Ishita Patel', 'Jatin Agarwal',
+            'Kavya Menon', 'Lakshmi Rao', 'Manish Tiwari', 'Neha Chawla', 'Omkar Singh',
+            'Priyanka Nanda', 'Rahul Bhatt', 'Sakshi Gupta', 'Tarun Kapoor', 'Uma Sharma',
+            'Vikash Malhotra', 'Yashika Shah', 'Zainab Ali', 'Aakash Kumar', 'Bhumika Das'
+        ];
+
+        // Update Firmware Table (25 reports with random Indian names)
         function updateFirmwareTable() {
             const tbody = document.getElementById('firmwareTableBody');
             tbody.innerHTML = '';
@@ -1139,30 +1381,32 @@
             // Get current time once for all elevators
             const currentTime = getCurrentTime12Hour();
             
-            // Random firmware IDs pool
+            // Firmware IDs pool
             const firmwareIdPool = ['1.2.104', '1.2.102', '1.2:105', '1.2.106', '1.2.103', '1.2:107', '1.2.108', '1.2:109', '1.2.110', '1.2.111', '1.2:112', '1.2.113', '1.2.114', '1.2:115', '1.2.116', '1.2:117', '1.2.118', '1.2.119', '1.2:120', '1.2.121', '1.2:122', '1.2.123', '1.2.124', '1.2:125', '1.2.126'];
             const statusPool = ['OK', 'Mismatch', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'Update Required', 'OK', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK', 'Mismatch', 'OK', 'OK', 'Update Required', 'OK'];
             
-            // Show all 25 elevators with completely random data
-            for (let i = 1; i <= 25; i++) {
+            // Shuffle names array to get random order
+            const shuffledNames = [...randomIndianNames].sort(() => Math.random() - 0.5);
+            
+            // Show 25 reports with random Indian names
+            for (let i = 0; i < 25; i++) {
                 const row = document.createElement('tr');
-                // Generate completely random firmware ID and status
-                const randomFirmwareId = firmwareIdPool[Math.floor(Math.random() * firmwareIdPool.length)];
-                const randomStatus = statusPool[Math.floor(Math.random() * statusPool.length)];
+                // Use random firmware ID and status
+                const randomFirmwareId = firmwareIdPool[i];
+                const randomStatus = statusPool[i];
+                const clientName = shuffledNames[i];
                 
-                const isActive = i === currentUserId;
                 const isMismatch = randomStatus === 'Mismatch' || randomStatus === 'Update Required';
                 
-                row.className = `hover:bg-gray-600/30 transition-all duration-300 ${isActive ? 'bg-green-500/10' : ''}`;
+                row.className = `hover:bg-gray-600/30 transition-all duration-300`;
                 
                 const statusColor = isMismatch ? 'text-red-400' : 'text-green-400';
                 const firmwareIdColor = randomFirmwareId.includes(':') ? 'text-red-400' : 'text-green-400';
                 const statusIcon = isMismatch ? '' : '<svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
                 
-                const clientName = userData[i] ? userData[i].name : `Client ${i}`;
                 row.innerHTML = `
                     <td class="px-4 py-3 text-sm font-medium text-white">${clientName}</td>
-                    <td class="px-4 py-3 text-sm ${firmwareIdColor}">${randomFirmwareId}</td>
+                    <td class="px-4 py-3 text-sm ${firmwareIdColor} font-mono">${randomFirmwareId}</td>
                     <td class="px-4 py-3 text-sm font-semibold ${statusColor}">
                         ${statusIcon}${randomStatus}
                     </td>
@@ -1172,6 +1416,156 @@
                 tbody.appendChild(row);
             }
         }
+
+        // Update Advanced Diagnostics
+        function updateAdvancedDiagnostics() {
+            updateSystemHealth();
+            updateHealthTrendsChart();
+        }
+
+        // Update System Health Overview
+        function updateSystemHealth() {
+            const systemHealth = Math.floor(Math.random() * 10) + 88; // 88-97%
+            const activeErrors = Math.floor(Math.random() * 3) + 1; // 1-3 errors
+            const uptime = Math.floor(Math.random() * 20) + 35; // 35-54 days
+            const maintenanceDue = Math.floor(Math.random() * 10) + 8; // 8-17 days
+
+            document.getElementById('systemHealthValue').textContent = systemHealth + '%';
+            document.getElementById('activeErrorsValue').textContent = activeErrors;
+            document.getElementById('uptimeValue').textContent = uptime + 'd';
+            document.getElementById('maintenanceDueValue').textContent = maintenanceDue + 'd';
+
+            // Update health bar
+            const healthBar = document.getElementById('systemHealthBar');
+            healthBar.style.width = systemHealth + '%';
+
+            // Update health indicator color
+            const indicator = document.getElementById('systemHealthIndicator');
+            if (systemHealth >= 90) {
+                indicator.className = 'w-3 h-3 rounded-full bg-green-500 animate-pulse';
+                healthBar.className = 'bg-gradient-to-r from-green-500 to-emerald-400 h-2 rounded-full transition-all duration-500';
+            } else if (systemHealth >= 75) {
+                indicator.className = 'w-3 h-3 rounded-full bg-yellow-500 animate-pulse';
+                healthBar.className = 'bg-gradient-to-r from-yellow-500 to-amber-400 h-2 rounded-full transition-all duration-500';
+            } else {
+                indicator.className = 'w-3 h-3 rounded-full bg-red-500 animate-pulse';
+                healthBar.className = 'bg-gradient-to-r from-red-500 to-pink-400 h-2 rounded-full transition-all duration-500';
+            }
+        }
+
+        // Update Health Trends Chart
+        function updateHealthTrendsChart(period = '7d') {
+            const ctx = document.getElementById('healthTrendsChart');
+            if (!ctx) return;
+
+            if (healthTrendsChart) {
+                healthTrendsChart.destroy();
+            }
+
+            let labels, data, periodText;
+            if (period === '7d') {
+                labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                data = [88, 90, 89, 92, 91, 93, 92];
+                periodText = 'Last 7 Days';
+            } else if (period === '30d') {
+                labels = [];
+                data = [];
+                for (let i = 0; i < 30; i += 5) {
+                    labels.push(`Day ${i + 1}`);
+                    data.push(Math.floor(Math.random() * 10) + 85);
+                }
+                periodText = 'Last 30 Days';
+            } else {
+                labels = [];
+                data = [];
+                for (let i = 0; i < 12; i++) {
+                    labels.push(`Week ${i + 1}`);
+                    data.push(Math.floor(Math.random() * 10) + 85);
+                }
+                periodText = 'Last 90 Days';
+            }
+
+            // Update period text
+            const periodTextEl = document.getElementById('trendsPeriodText');
+            if (periodTextEl) {
+                periodTextEl.textContent = periodText;
+            }
+
+            healthTrendsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'System Health',
+                        data: data,
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: 'rgb(34, 197, 94)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            callbacks: {
+                                label: (context) => 'Health: ' + context.parsed.y + '%'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            display: true,
+                            ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            min: 80,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Export Diagnostics Report
+        function exportDiagnosticsReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                systemHealth: document.getElementById('systemHealthValue').textContent,
+                activeErrors: document.getElementById('activeErrorsValue').textContent,
+                uptime: document.getElementById('uptimeValue').textContent,
+                maintenanceDue: document.getElementById('maintenanceDueValue').textContent,
+                errorLogs: diagnosticsData.errorLogs,
+                components: diagnosticsData.components,
+                maintenanceAlerts: diagnosticsData.maintenanceAlerts
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diagnostics-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
     </script>
 </body>
 </html>
