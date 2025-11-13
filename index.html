@@ -732,7 +732,8 @@
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
                             <div>
                                 <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-1">System Health Trends</h3>
-                                <p class="text-xs text-gray-400" id="trendsPeriodText">Last 7 Days</p>
+                                <p class="text-xs text-gray-400" id="trendsClientName">Client: <span id="trendsClientNameValue" class="text-blue-400 font-medium">Rajesh Kumar</span></p>
+                                <p class="text-xs text-gray-500 mt-0.5" id="trendsPeriodText">Last 7 Days</p>
                             </div>
                             <div class="flex gap-2 bg-gray-600/50 p-1 rounded-lg">
                                 <button class="diagnosticTimeBtn active text-xs px-4 py-2 bg-blue-600 text-white rounded-md font-medium transition-all duration-300 hover:bg-blue-700 shadow-lg" data-period="7d">7D</button>
@@ -799,6 +800,27 @@
             24: { name: 'Isha Reddy', mac: 'X4:Y5:Z6:A1:B2:C3', profileImg: 'https://i.pravatar.cc/150?img=48', location: 'Faridabad, Haryana', gradient: 'from-green-400 to-teal-500', initial: 'I', firmwareStatus: firmwareStatuses[23], firmwareId: firmwareIds[23], doorCycleTime: doorCycleTimes[23] },
             25: { name: 'Yash Agarwal', mac: 'Y6:Z1:A2:B3:C4:D5', profileImg: 'https://i.pravatar.cc/150?img=53', location: 'Meerut, Uttar Pradesh', gradient: 'from-indigo-400 to-purple-500', initial: 'Y', firmwareStatus: firmwareStatuses[24], firmwareId: firmwareIds[24], doorCycleTime: doorCycleTimes[24] }
         };
+
+        // Health Trends Data for each client (25 clients with different data)
+        const clientHealthTrends = {};
+        for (let i = 1; i <= 25; i++) {
+            // Generate unique health trend data for each client
+            const baseHealth = Math.floor(Math.random() * 15) + 80; // 80-94%
+            clientHealthTrends[i] = {
+                '7d': {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    data: Array.from({length: 7}, () => baseHealth + Math.floor(Math.random() * 10) - 5)
+                },
+                '30d': {
+                    labels: Array.from({length: 6}, (_, idx) => `Day ${(idx + 1) * 5}`),
+                    data: Array.from({length: 6}, () => baseHealth + Math.floor(Math.random() * 10) - 5)
+                },
+                '90d': {
+                    labels: Array.from({length: 12}, (_, idx) => `Week ${idx + 1}`),
+                    data: Array.from({length: 12}, () => baseHealth + Math.floor(Math.random() * 10) - 5)
+                }
+            };
+        }
 
         // Advanced Diagnostics Data
         const diagnosticsData = {
@@ -945,7 +967,7 @@
                     btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
                     btn.classList.remove('bg-transparent', 'text-gray-300');
                     const period = btn.dataset.period;
-                    updateHealthTrendsChart(period);
+                    updateHealthTrendsChart(period, currentUserId);
                 });
             });
 
@@ -1420,7 +1442,7 @@
         // Update Advanced Diagnostics
         function updateAdvancedDiagnostics() {
             updateSystemHealth();
-            updateHealthTrendsChart();
+            updateHealthTrendsChart('7d', currentUserId);
         }
 
         // Update System Health Overview
@@ -1453,8 +1475,8 @@
             }
         }
 
-        // Update Health Trends Chart
-        function updateHealthTrendsChart(period = '7d') {
+        // Update Health Trends Chart (Client-specific)
+        function updateHealthTrendsChart(period = '7d', userId = currentUserId) {
             const ctx = document.getElementById('healthTrendsChart');
             if (!ctx) return;
 
@@ -1462,34 +1484,64 @@
                 healthTrendsChart.destroy();
             }
 
-            let labels, data, periodText;
+            // Get client-specific data
+            const clientData = clientHealthTrends[userId] || clientHealthTrends[1];
+            const trendData = clientData[period];
+            
+            let labels = trendData.labels;
+            let data = trendData.data;
+            let periodText;
+            
             if (period === '7d') {
-                labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                data = [88, 90, 89, 92, 91, 93, 92];
                 periodText = 'Last 7 Days';
             } else if (period === '30d') {
-                labels = [];
-                data = [];
-                for (let i = 0; i < 30; i += 5) {
-                    labels.push(`Day ${i + 1}`);
-                    data.push(Math.floor(Math.random() * 10) + 85);
-                }
                 periodText = 'Last 30 Days';
             } else {
-                labels = [];
-                data = [];
-                for (let i = 0; i < 12; i++) {
-                    labels.push(`Week ${i + 1}`);
-                    data.push(Math.floor(Math.random() * 10) + 85);
-                }
                 periodText = 'Last 90 Days';
             }
 
-            // Update period text
+            // Update client name and period text
+            const clientNameEl = document.getElementById('trendsClientNameValue');
             const periodTextEl = document.getElementById('trendsPeriodText');
+            
+            if (clientNameEl && userData[userId]) {
+                clientNameEl.textContent = userData[userId].name;
+            }
             if (periodTextEl) {
                 periodTextEl.textContent = periodText;
             }
+
+            // Get client's gradient color for chart
+            const user = userData[userId] || userData[1];
+            const gradientColors = {
+                'from-blue-400 to-purple-500': { border: 'rgb(96, 165, 250)', fill: 'rgba(96, 165, 250, 0.15)' },
+                'from-green-400 to-teal-500': { border: 'rgb(74, 222, 128)', fill: 'rgba(74, 222, 128, 0.15)' },
+                'from-pink-400 to-red-500': { border: 'rgb(244, 114, 182)', fill: 'rgba(244, 114, 182, 0.15)' },
+                'from-yellow-400 to-orange-500': { border: 'rgb(251, 191, 36)', fill: 'rgba(251, 191, 36, 0.15)' },
+                'from-indigo-400 to-blue-500': { border: 'rgb(129, 140, 248)', fill: 'rgba(129, 140, 248, 0.15)' },
+                'from-cyan-400 to-blue-500': { border: 'rgb(34, 211, 238)', fill: 'rgba(34, 211, 238, 0.15)' },
+                'from-purple-400 to-pink-500': { border: 'rgb(192, 132, 252)', fill: 'rgba(192, 132, 252, 0.15)' },
+                'from-teal-400 to-cyan-500': { border: 'rgb(45, 212, 191)', fill: 'rgba(45, 212, 191, 0.15)' },
+                'from-orange-400 to-red-500': { border: 'rgb(251, 146, 60)', fill: 'rgba(251, 146, 60, 0.15)' },
+                'from-blue-400 to-indigo-500': { border: 'rgb(96, 165, 250)', fill: 'rgba(96, 165, 250, 0.15)' },
+                'from-green-400 to-emerald-500': { border: 'rgb(16, 185, 129)', fill: 'rgba(16, 185, 129, 0.15)' },
+                'from-pink-400 to-rose-500': { border: 'rgb(244, 63, 94)', fill: 'rgba(244, 63, 94, 0.15)' },
+                'from-yellow-400 to-amber-500': { border: 'rgb(245, 158, 11)', fill: 'rgba(245, 158, 11, 0.15)' },
+                'from-violet-400 to-purple-500': { border: 'rgb(167, 139, 250)', fill: 'rgba(167, 139, 250, 0.15)' },
+                'from-cyan-400 to-blue-500': { border: 'rgb(34, 211, 238)', fill: 'rgba(34, 211, 238, 0.15)' },
+                'from-emerald-400 to-green-500': { border: 'rgb(52, 211, 153)', fill: 'rgba(52, 211, 153, 0.15)' },
+                'from-red-400 to-pink-500': { border: 'rgb(248, 113, 113)', fill: 'rgba(248, 113, 113, 0.15)' },
+                'from-indigo-400 to-blue-500': { border: 'rgb(129, 140, 248)', fill: 'rgba(129, 140, 248, 0.15)' },
+                'from-teal-400 to-cyan-500': { border: 'rgb(45, 212, 191)', fill: 'rgba(45, 212, 191, 0.15)' },
+                'from-orange-400 to-yellow-500': { border: 'rgb(251, 191, 36)', fill: 'rgba(251, 191, 36, 0.15)' },
+                'from-purple-400 to-violet-500': { border: 'rgb(167, 139, 250)', fill: 'rgba(167, 139, 250, 0.15)' },
+                'from-pink-400 to-red-500': { border: 'rgb(244, 114, 182)', fill: 'rgba(244, 114, 182, 0.15)' },
+                'from-blue-400 to-cyan-500': { border: 'rgb(34, 211, 238)', fill: 'rgba(34, 211, 238, 0.15)' },
+                'from-green-400 to-teal-500': { border: 'rgb(45, 212, 191)', fill: 'rgba(45, 212, 191, 0.15)' },
+                'from-indigo-400 to-purple-500': { border: 'rgb(129, 140, 248)', fill: 'rgba(129, 140, 248, 0.15)' }
+            };
+            
+            const colors = gradientColors[user.gradient] || { border: 'rgb(59, 130, 246)', fill: 'rgba(59, 130, 246, 0.15)' };
 
             healthTrendsChart = new Chart(ctx, {
                 type: 'line',
@@ -1498,42 +1550,71 @@
                     datasets: [{
                         label: 'System Health',
                         data: data,
-                        borderColor: 'rgb(34, 197, 94)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderColor: colors.border,
+                        backgroundColor: colors.fill,
                         borderWidth: 3,
                         fill: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: 'rgb(34, 197, 94)',
+                        tension: 0.5,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: colors.border,
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2
+                        pointBorderWidth: 3,
+                        pointHoverBackgroundColor: colors.border,
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
                             padding: 12,
+                            borderColor: colors.border + '80',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
                             callbacks: {
-                                label: (context) => 'Health: ' + context.parsed.y + '%'
+                                label: (context) => `Health: ${context.parsed.y}%`,
+                                title: () => ''
                             }
                         }
                     },
                     scales: {
                         x: {
                             display: true,
-                            ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } },
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.6)', 
+                                font: { size: 11, weight: '500' },
+                                padding: 8
+                            },
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.08)',
+                                drawBorder: false
+                            }
                         },
                         y: {
                             display: true,
-                            ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } },
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            min: 80,
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.6)', 
+                                font: { size: 11, weight: '500' },
+                                padding: 8,
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.08)',
+                                drawBorder: false
+                            },
+                            min: 75,
                             max: 100
                         }
                     }
